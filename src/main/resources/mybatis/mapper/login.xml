@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dage.quality.DAO.UserDao">
+    <select id="chK_logIn" resultType="com.dage.quality.DTO.UserDto">
+        SELECT
+            USER_NO
+            ,USER_ID
+            ,USER_NM
+            ,EMPNO
+            ,EMPNO_D
+            ,USER_NO
+            ,b.ADMIN
+            ,sfcc_get_projname_QUL(get_user_proj(user_no)) as dept_name
+            ,get_position_name(user_no) as position
+            ,get_user_proj(user_no) as proj_code
+            ,(select  case when substr(reg_no,7,1) in (1,3,5,7,9) then '남자' when substr(reg_no,7,1) in (2,4,6,8)  then '여자' else '에러' end as gender from thr_pm_base where emp_no = a.empno ) as gender
+        FROM
+        TCC_EMPLOYE a,THR_QUL_COM b
+
+        WHERE a.user_no = b.com_value(+)
+            AND USER_ID = #{user_id}
+            AND PASSWORD = #{user_pwd}
+            AND USE_FG != 'F'  <!-- 사용여부 태그  T = 사용 , F = 미사용 -->
+    </select>
+<!-- 겸 직-->
+    <select id="get_sub_name" resultType="hashmap">
+        select
+            z.emp_no as empno
+            <!--,sfcc_get_projname(  annou_sub_dept) as 기본부서-->
+<!--            , annou_position_code-->
+<!--            ,annou_duty-->
+<!--            ,x.SUB_SEQ-->
+            ,x.PROJ_CODE as proj_code
+<!--            ,x.DUTY_CODE-->
+            ,sfcc_get_projname(x.PROJ_CODE) as sub_dept_name
+        from
+        (
+        select
+            b.*, row_number()over(partition by b.emp_no order by annou_dt desc, seq desc) as rnum
+        from
+            thr_annou_mng a
+            ,thr_annou_detail_mng b
+        where
+            a.docu_no = b.docu_no
+        )
+        z
+        ,thr_annou_add_dept x
+        where
+            z.docu_no = x.docu_no
+            and z.seq = x.seq
+            and z.rnum = 1
+            and z.emp_no = #{emp_no}
+    </select>
+
+    <select id="menu_list" resultType="hashmap">
+        select
+        to_char(MENU_CODE,'FM0000')MENU_CODE,
+        NAME,
+        CRTUSERNO,
+        MODUSERNO,
+        CRTDATE,
+        to_char(P_MENU_CODE,'FM0000')P_MENU_CODE,
+        nvl((SELECT count(B.MENU_CODE) FROM thr_qul_list_code B WHERE B.P_MENU_CODE= a.MENU_CODE),'0') AS CHILD_TG,
+        (select count(*) from thr_qul_list where menu_code = a.menu_code) CNT,
+        CMT1,
+        CMT2,
+        CMT3,
+        CMT4,
+        CMT5,
+        LEVEL
+        from thr_qul_list_code a
+
+        start with P_MENU_CODE IS NULL
+        connect by PRIOR  MENU_CODE = P_MENU_CODE
+
+    </select>
+
+    <select id="menu_list_h" resultType="hashmap">
+        select
+        to_char(MENU_CODE,'FM0000')MENU_CODE,
+        NAME,
+        CRTUSERNO,
+        MODUSERNO,
+        CRTDATE,
+        to_char(P_MENU_CODE,'FM0000')P_MENU_CODE
+        from thr_qul_list_code
+        where name not in ('위험성평가','비상대응훈련')
+        order by menu_code
+    </select>
+
+
+
+    <select id="menu_list_noAdmin" resultType="hashmap">
+        <![CDATA[
+        select
+            to_char(MENU_CODE,'FM0000')MENU_CODE,
+            NAME,
+            CRTUSERNO,
+            MODUSERNO,
+            CRTDATE,
+            to_char(P_MENU_CODE,'FM0000')P_MENU_CODE,
+            LEVEL,
+            (select count(*) from thr_qul_list where menu_code = a.menu_code and
+            (
+            proj_code
+                in
+                    (
+                        select
+                            x.PROJ_CODE as proj_code
+                        from
+                        (
+                        select
+                        b.*, row_number()over(partition by b.emp_no order by annou_dt desc, seq desc) as rnum
+                        from
+                            thr_annou_mng a
+                            ,thr_annou_detail_mng b
+                        where
+                            a.docu_no = b.docu_no
+                        )z,
+                        thr_annou_add_dept x
+                        where
+                            z.docu_no = x.docu_no
+                            and z.seq = x.seq
+                            and z.rnum = 1
+                            and z.emp_no = #{empno}
+                    )
+                or proj_code = #{proj_code} )
+            ) CNT
+        from
+            thr_qul_list_code a
+        where
+            level != 1 and  level <=  (select max(level) from thr_qul_list_code start with P_MENU_CODE IS NULL connect by PRIOR  MENU_CODE = P_MENU_CODE  )
+        start with P_MENU_CODE IS NULL
+        connect by PRIOR  MENU_CODE = P_MENU_CODE
+        order by menu_code,LEVEL
+        ]]>
+    </select>
+    <select id="menu_list_s" resultType="hashmap">
+        <![CDATA[
+         select
+            to_char(MENU_CODE,'FM0000')MENU_CODE,
+            NAME,
+            CRTUSERNO,
+            MODUSERNO,
+            CRTDATE,
+            to_char(P_MENU_CODE,'FM0000')P_MENU_CODE,
+            LEVEL,
+            (select count(*) from thr_qul_list where menu_code = a.menu_code) CNT
+        from
+            thr_qul_list_code a
+        where
+            level != 1 and  level <=  (select max(level) from thr_qul_list_code start with P_MENU_CODE IS NULL connect by PRIOR  MENU_CODE = P_MENU_CODE  )
+        start with P_MENU_CODE IS NULL
+        connect by PRIOR  MENU_CODE = P_MENU_CODE
+        order by menu_code,LEVEL
+        ]]>
+    </select>
+    <select id="get_s_menu" resultType="hashmap">
+        select
+            MENU_CODE,
+            NAME,
+            CRTUSERNO,
+            MODUSERNO,
+            CRTDATE,
+            P_MENU_CODE
+        from thr_qul_list_code
+        where p_menu_code = #{p_menu_code}
+        order by menu_code,P_MENU_CODE
+    </select>
+    <select id="list" resultType="hashmap">
+        SELECT
+        to_char(A.SEQ) SEQ,
+        (Select Count(*)
+        From   THR_QUL_LIST_COM B
+        Where  A.SEQ = B.LIST_SEQ) as CMT,
+        A.MENU_CODE,
+        A.TITLE,
+        A.FILE_TAG,
+        A.USER_NM,
+        A.CRTDATE,
+        A.MODDATE,
+        A.AUDH_LEVEL,
+        A.DOC_VER,
+        A.DEPT_NAME,
+        A.PROJ_CODE,
+        A.CONTENT,
+        A.MENU_NAME,
+        A.POSITION,
+        A.USER_NO,
+        A.EMP_NO,
+        A.MODUSER,
+        A.YEAR
+
+        FROM THR_QUL_LIST A
+
+
+        ORDER BY A.CRTDATE desc
+    </select>
+
+    <select id="list_search" resultType="hashmap">
+        SELECT
+        to_char(A.SEQ) SEQ,
+        (Select Count(*)
+        From   THR_QUL_LIST_COM B
+        Where  A.SEQ = B.LIST_SEQ) as CMT,
+        A.MENU_CODE,
+        A.TITLE,
+        A.FILE_TAG,
+        A.USER_NM,
+        A.CRTDATE,
+        A.MODDATE,
+        A.AUDH_LEVEL,
+        A.DOC_VER,
+        A.DEPT_NAME,
+        A.PROJ_CODE,
+        A.CONTENT,
+        A.MENU_NAME,
+        A.POSITION,
+        A.USER_NO,
+        A.EMP_NO,
+        A.MODUSER,
+        A.YEAR
+        FROM THR_QUL_LIST A
+        WHERE dept_name like '%#{search_txt}%' or menu_name like '%#{search_txt}%'
+        ORDER BY A.CRTDATE desc
+    </select>
+
+    <select id="list_proj" resultType="hashmap">
+        select *
+        from
+            thr_qul_list
+        where
+            proj_code
+        in
+        (
+            select
+                x.PROJ_CODE as proj_code
+            from
+                (
+                    select
+                    b.*, row_number()over(partition by b.emp_no order by annou_dt desc, seq desc) as rnum
+                    from
+                    thr_annou_mng a
+                    ,thr_annou_detail_mng b
+                    where
+                    a.docu_no = b.docu_no
+                )z,
+                thr_annou_add_dept x
+            where
+                z.docu_no = x.docu_no
+                and z.seq = x.seq
+                and z.rnum = 1
+                and z.emp_no = #{empno}
+        )
+        or proj_code = #{proj_code}
+        ORDER BY CRTDATE desc, proj_code desc
+    </select>
+    <select id="list_state_main" resultType="hashmap">
+        select *
+        from thr_qul_list a
+        ORDER BY a.CRTDATE DESC
+    </select>
+    <select id="list_state" resultType="hashmap">
+        select a.*,(Select Count(*)
+        From   THR_QUL_LIST_COM c
+        Where  A.SEQ = c.LIST_SEQ) as CMT
+        from thr_qul_list a ,
+        thr_qul_list_code b
+        where
+        a.menu_code = b.menu_code
+        and (b.menu_code = #{menu_code} or b.p_menu_code = #{menu_code})
+            ORDER BY a.CRTDATE DESC
+    </select>
+    <select id="list_state_proj" resultType="hashmap">
+        select *
+        from
+            thr_qul_list
+        where
+            (
+                proj_code
+                    in
+                    (
+                        select
+                            x.PROJ_CODE as proj_code
+                        from
+                        (
+                        select
+                        b.*, row_number()over(partition by b.emp_no order by annou_dt desc, seq desc) as rnum
+                        from
+                            thr_annou_mng a
+                            ,thr_annou_detail_mng b
+                        where
+                            a.docu_no = b.docu_no
+                        )z,
+                        thr_annou_add_dept x
+                        where
+                            z.docu_no = x.docu_no
+                            and z.seq = x.seq
+                            and z.rnum = 1
+                            and z.emp_no = #{empno}
+                    )
+                or proj_code = #{proj_code}
+            )
+            and menu_code =#{menu_code}
+        ORDER BY CRTDATE desc, proj_code desc
+    </select>
+
+</mapper>

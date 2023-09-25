@@ -1,0 +1,58 @@
+
+/** 메인 CSS */
+
+.main_div{
+/*margin-left:240px;
+*/
+}
+#result_div{
+margin-left:240px;
+}
+
+
+
+/*#sub_dept_div{
+display: -webkit-box;
+}*/
+.mouseOn{
+background-color:gray;
+}
+
+/*label[for="file_upload"]{
+display: inline;
+}*/
+label{
+    font-weight:bold;
+    font-size:15px;
+}
+.write_tab th{
+    text-align:center;
+    background-color:#0675AC;
+    color:white;
+    cursor:auto;
+}
+
+.upload-box{
+    width:100%;
+    height: 200px;
+    border:1px dashed gray;
+    box-shadow: 2px 3px 9px hsl(0, 0%, 47%);
+    padding:10px;
+    overflow:scroll;
+    cursor:pointer;
+}
+.upload-box #placeHold_f{
+    font-size:1.5em;
+    position:relative;
+    left:40%;
+    top:50%;
+
+}
+
+.upload-box #placeHold_f{
+    font-size:1.5em;
+    position:relative;
+    left:40%;
+    top:50%;
+
+}

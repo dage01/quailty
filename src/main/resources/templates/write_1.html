@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head :: headFragment"></head>
+
+<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link th:href="@{/css/side.css}" rel="stylesheet">
+
+
+<link th:href="@{/css/main.css}" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+<script>
+    $(function () {
+
+
+
+        if (window.opener.document.getElementById("tree_menu_s1").value == "") {
+            document.getElementById("menu_code").value = "";
+            document.getElementById("menu_name").value = "";
+        } else {
+            document.getElementById("menu_code").value = window.opener.document.getElementById("tree_menu_s1").value;
+            document.getElementById("menu_name").value = window.opener.document.getElementById("tree_menu_n1").value;
+
+        }
+
+        var admin_ck = $("#admin").val();
+        if (admin_ck != 'Y') {
+
+            $("#cmt_btn").hide();
+
+        }
+
+
+        return false;
+
+    })
+
+</script>
+
+
+
+<style>
+        #priveiwImg{
+            width: 80px;
+            height: 80px;
+        }
+        #upload_message{
+            font-size:30px;
+            font-weight:bolder;
+        }
+        h6{
+            font-size:18px;
+            font-weight:bolder;
+        }
+        body{
+
+        float : left;
+        }
+    </style>
+<body>
+
+<!--        <div class th:replace="fragments/menu :: menuFragment"> </div>-->
+        <div style="" class="main_div  container-fluid" id="main_div">
+            <div class="row g-0" >
+                <div class=" col-lg-12" style="margin-top:20px;">
+                    <h2 class="mb-3 fw-bold">문서등록 <i class="bi bi-journal-plus text-dark fs-9"></i> </h2>
+
+
+                        <div class="row g-3 needs-validation">
+                            <div>
+                                <input type="text" id="user_no" hidden th:value="${session.dto.user_no}">
+                                <input type="text" id="empno" hidden th:value="${session.dto.empno}">
+                                <input type="text" id="admin" hidden th:value="${session.dto.admin}">
+
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="name" class="form-label">작성인</label>
+                                <input id="name" readonly type="text" class="form-control" th:value="${session.dto.user_nm}"  required/>
+
+                            </div>
+
+
+
+                            <div class="col-sm-3">
+                                <label for="dept_name" class="form-label">현장명</label>
+                                <input id="dept_name" class="form-control" readonly th:value="${session.dto.dept_name}" />
+                                <input id="proj_code" hidden th:value="${session.dto.proj_code}">
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label for="position" class="form-label" hidden>직위</label>
+                                <input id="position" class="form-control" readonly type="text" th:value="${session.dto.position}" hidden required/>
+
+                            </div>
+
+<!--                            <div class="col-sm-3 position-relative" >-->
+<!--                                <label for="sub_dept_name" class="form-label ">등록 부서 변경<small class="position-absolute alert-danger top-0 end-0"># 통합정보 인사발령을 기준으로 합니다.</small></label>-->
+<!--                                <div id="sub_dept_div" class="input-group has-validation">-->
+
+<!--                                    <select id="sub_dept_name" class="form-select" th:if="${sub_emp_list}" >-->
+<!--                                        <option value="-1" disabled selected>등록 부서를 선택해주세요. &#128269;  </option>-->
+<!--                                        <option  th:each="list : ${sub_emp_list}" th:text="${list.SUB_DEPT_NAME}" th:value="${list.PROJ_CODE}">-->
+<!--                                        </option>-->
+<!--                                    </select>-->
+
+<!--                                    <select  class="form-select" th:unless="${sub_emp_list}" disabled >-->
+<!--                                        <option value="" disabled selected> 권한 부서가 없습니다.   </option>-->
+<!--                                    </select>-->
+
+<!--                                    <button  id="dept_btn" class="btn btn-primary ms-2 position-relative" th:if="${sub_emp_list}" type="button">변경</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+                            <div></div>
+                            <div class="col-4">
+                                <label for="menu_name" class="form-label">보관함</label>
+                                <div class="input-group has-validation">
+
+<!--                                    <select id="menu_code" class="form-select" >-->
+<!--                                        <option value="" disabled selected>&#128194;  저장하실 보관함 선택하여 주십시오.</option>-->
+<!--                                        <option  th:each="list : ${menu_list_s}" th:text="${list.NAME}" th:value="${list.MENU_CODE}">-->
+<!--                                        </option>-->
+<!--                                    </select>-->
+                                    <input id="menu_code" type="text" class="form-control" readonly hidden/>
+                                    <input id="menu_name" type="text" class="form-control" readonly />
+
+
+                                    <button class="btn btn-success " data-bs-toggle="modal" data-bs-target="#exampleModal">선택</button>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">문서버전</label>
+                                <input type="text" class="form-control" value="1.0" readonly />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" hidden>문서버전</label>
+                                <input type="text" class="form-control" value="1.0" hidden readonly />
+                            </div>
+
+                            <div class="col-3">
+                                <label for="doc_month" class="form-label" >년월 </label>
+                                <input type="month" class="form-control" id="doc_month" onchange="get_title();">
+                            </div>
+                            <div class="col-2">
+                                <label for="doc_turn" class="form-label" >회차 </label>
+                                <div class="col col-sm-8">
+                                <select id="doc_turn" style="width:100px;height:35px" onchange="get_title();">
+                                    <option value="1">1회차</option>
+                                    <option value="2">2회차</option>
+                                    <option value="3">3회차</option>
+                                    <option value="4">4회차</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <label for="doc_sdt" class="form-label">평가기간 시작</label>
+                                <input type="date" class="form-control" id="doc_sdt" onchange="get_title();">
+                            </div>
+                            <div class="col-3">
+                                <label for="doc_edt" class="form-label">평가기간 끝</label>
+                                <input type="date" class="form-control" id="doc_edt" onchange="get_title();">
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="title" class="form-label">제목</label>
+                                <input type="text" class="form-control" id="title" tabindex="1"/>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="content" class="form-label">내용</label>
+                                <textarea style="resize:none" rows="5" class="form-control" id="content" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <span class="btn btn-warning fileinput-button dz-clickable mb-1">
+                                      <span>업로드 파일</span>
+                                    <i class="bi bi-folder-plus fw-bolder fs-5"></i>
+                                </span>
+                            </div>
+                            <div class="col-6">
+
+
+                                <form th:action="@{/test2}" class="dropzone list-unstyled" th:id="myDropzone" id="myDropzone">
+
+                                    <div class="dz-message" data-dz-message>
+                                        <span class="align-middle" id="upload_message">파일을 드래그 드랍 해주세요. <i class="bi bi-cloud-plus-fill fs-1"></i> </span>
+                                    </div>
+
+                                </form>
+
+                                <button hidden th:id="test2" type="button">업로드 hidden Btn</button>
+
+                                <!-- 포스팅 - 이미지/동영상 dropzone 영역 -->
+                                <div class="row" hidden>
+                                    <div class="col ">
+                                        <ul class="list-unstyled mb-0 " id="dropzone-preview">
+                                            <li class="mt-2" id="dropzone-preview-list">
+                                                <!-- This is used as the file preview template -->
+                                                <div class="border rounded-3">
+                                                    <div class="d-flex align-items-center p-2">
+                                                        <div class="flex-shrink-0 me-3">
+                                                            <div class="width-8 h-auto rounded-3">
+                                                                <img data-dz-thumbnail="data-dz-thumbnail" id="priveiwImg" class="img-fluid rounded-3 block" src="#" alt="Dropzone-Image" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="pt-1">
+                                                                <h6 class="font-semibold mb-1" data-dz-name="data-dz-name">&nbsp;</h6>
+                                                                <p class="text-sm text-muted fw-normal" data-dz-size="data-dz-size"></p>
+                                                                <strong class="error text-danger" data-dz-errormessage="data-dz-errormessage"></strong>
+                                                            </div>
+                                                        </div>
+                                                        <div class="shrink-0 ms-3">
+                                                            <button data-dz-remove="data-dz-remove" class="btn btn-sm btn-danger">삭제</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!--드랍존 end-->
+                                <div class="progress" style="display:none" >
+                                    <div id="pro_g" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                        <span class="pro_s"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <span class="btn btn-warning fileinput-button dz-clickable mb-1" hidden>
+                                      <span>필수파일</span>
+                                    <i class="bi bi-folder-plus fw-bolder fs-5"></i>
+                                </span>
+
+<!--                                <input type="text" class="form-control" id="cmt1" th:value="${cmt.cmt1}"/>-->
+<!--                                <input type="text" class="form-control" id="cmt2" th:value="${cmt.cmt2}"/>-->
+<!--                                <input type="text" class="form-control" id="cmt3" th:value="${cmt.cmt3}"/>-->
+<!--                                <input type="text" class="form-control" id="cmt4" th:value="${cmt.cmt4}"/>-->
+<!--                                <input type="text" class="form-control" id="cmt5" th:value="${cmt.cmt5}"/>-->
+
+                            </div>
+                            <div class="col-12" style="text-align:right;">
+                                <button id="cmt_btn" style="width:10%;" class="btn btn-success">저장</button>
+                            </div>
+
+                            <div class="col-12 text-center">
+                                <button id="sub_btn" style="width:20%" class="btn btn-success ">등록</button>
+                            </div>
+                        </div>
+
+                    <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title fs-5" id="exampleModalLabel">보관함 선택</h5>
+                                    <button type="button" class="btn-close" id="close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body ">
+                                    <div class="card-body">
+                                        <h5 class="mb-3 fs-6">폴더명</h5>
+                                        <div class="row mb-3 " >
+                                            <div class="col col-sm-8">
+                                                <select id="menu_h"  class="form-select" style="width:100%" onchange="get_s_menu($(this).val());">
+                                                    <option disabled selected>폴더를 선택하여 주세요.</option>
+                                                    <option th:each="list : ${menu_list_h}" th:text="${list.NAME}" th:value="${list.MENU_CODE}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+<!--                                        <hr>-->
+<!--                                        <h5 class="mb-3 fs-6">하위 폴더<small>(저장될 폴더)</small></h5>-->
+<!--                                        <div class="row mb-3 " >-->
+<!--                                            <div class="col col-sm-8">-->
+<!--                                                <select id="menu_list_s" class="form-select" style="width:100%">-->
+<!--                                                </select>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <hr>-->
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" id="selectbtn">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="result_div">
+            <table id="jqgrid_table" class="table   text-nowrap  table-striped">
+            </table>
+        </div>
+        <div id="jqGridPager"></div>
+        <script th:src="@{/js/main.js}"></script>
+<script>
+const id = "#myDropzone";
+const dropzone = document.querySelector(id);
+
+      var dropzonePreviewNode = document.querySelector('#dropzone-preview-list');
+      dropzonePreviewNode.id = '';
+      var previewTemplate = dropzonePreviewNode.parentNode.innerHTML;
+      dropzonePreviewNode.parentNode.removeChild(dropzonePreviewNode);
+
+        var myDropzone = new Dropzone(id,{
+            url: "/test2",
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 1000, // MB
+            method: "post",
+            autoQueue: false,
+            clickable: true,
+            autoProcessQueue: false,
+            previewTemplate: previewTemplate,
+            parallelUploads:100,
+            clickable: ".fileinput-button",
+            init:function(){
+                this.on("addedfile", function(file){
+                    if(file.size>(100*1024*1024*1024)){
+                        alert("100GigaByte 미만의 파일만 업로드 가능합니다.");
+                        this.removeFile(file);
+                    }
+
+                        if (file.type.match(/spreadsheetml.*/) || file.type.match(/csv.*/)) {
+                        this.emit("thumbnail", file,"img/dropZone/excel.png");
+                        }
+                        else if (file.type.match(/pdf.*/)) {
+                            this.emit("thumbnail", file,"img/dropZone/pdf.jpg");
+                        }
+                        else if (file.type.match(/msword.*/)) {
+                            this.emit("thumbnail", file,"img/dropZone/word.png");
+                        }
+                        else if (file.type.match(/haansofthwp.*/)) {
+                            this.emit("thumbnail", file,"img/dropZone/한글.png");
+                        }
+                        else if (file.type.match(/presentationml.*/)) {
+                            this.emit("thumbnail", file,"img/dropZone/ppt.png");
+                        }else if(!file.type.match(/jpg.*/) || !file.type.match(/png.*/) || !file.type.match(/jpeg.*/)){
+                            this.emit("thumbnail", file,"img/dropZone/noimages.png");
+                        }
+                });
+                var myDropzone2 = this;
+                 $("#test2").on("click",function(e){
+                     if(myDropzone2.files!=null){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var file_list= null;
+                        file_list= myDropzone2.files;
+                        console.log(file_list);
+                        var sendingData = new FormData();
+                        if(file_list!="" && file_list !=null){
+                           for(var i=0;i <= file_list.length;i++){
+                                sendingData.append("file",file_list[i]);
+                           }
+                        }
+                        sendingData.append("user_no",$("#user_no").val());
+                        $.ajax({
+                            url:"/test2",
+                            data:sendingData,
+                            method:"post",
+                            dataType:"json",
+                            processData: false,
+                            contentType: false,
+                            xhr: function(){  //xhr 설정
+                                    let xhr = $.ajaxSettings.xhr()  //ajax에서 xhr객체를 가져 옵니다.
+                                    xhr.upload.onprogress = function(e){  //프로그래스 콜백 함수에서 뭐할지 정의하여 줍니다.
+                                            let percent = e.loaded / e.total * 100 //도달한 값에서 총 값을 나눈뒤 100을 곱하여 줍니다.(백분율)
+                                            progress(percent);
+                                    }
+                                return xhr  //정의된 xhr을 리턴하여 ajax에서 사용하도록 합니다.
+                            },
+                            success:function(data){
+                                if(data=="-2"){
+                                alert("로그인 이후 다시 진행해주시기 바랍니다.")
+                                location.href='/';
+                                }else if(data =="-1"){
+                                    alert("오류가 발생하였습니다. 파일의 크기가 너무 크거나 요청시간이 초과되었습니다.");
+                                }else{
+                                    alert("업로드 완료");
+                                    location.reload();
+                                }
+                            }
+                        })
+                     }
+                    else {return false; }
+                 });
+            }
+      });
+
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

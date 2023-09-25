@@ -1,0 +1,72 @@
+/*사이드바 메뉴*/
+#side_menu{
+    width: 240px;
+    height:100vh;
+    position:fixed;
+    overflow:auto ;
+}
+
+#side_menu li a{
+    color:black;
+    cursor:pointer;
+    font-size:15px;
+}
+#auth_menu li a{
+    color:black;
+    cursor:pointer;
+    font-size:14px;
+}
+#side_menu li a:before{
+    font-family: bootstrap-icons;
+    /*content:"\F132";*/
+}
+
+#side_menu li a:hover{
+    background-color:gray;
+    color:white;
+    font-weight:bolder;
+}
+#side_menu p{
+    font-weight:bolder;
+    text-align:center;
+    color:black;
+}
+
+.accordion-button{
+    padding:5px 5px;
+}
+/** 메인 CSS */
+
+#side_menu{
+   -ms-overflow-style: none;
+}
+#side_menu::-webkit-scrollbar{
+  display:none;
+}
+
+#sidebarMenu button{
+    font-weight:bolder;
+}
+
+#sidebarMenu a{
+    font-size:15px;
+}
+
+#sidebarMenu ul li .jstree-anchor.jstree-search{
+    color:black;
+    font-weight:bolder;
+}
+#sidebarMenu ul li .jstree-anchor.jstree-search:hover{
+    background-color:gray;
+    color:white;
+    font-weight:bolder;
+}
+#sidebarMenu .jstree-proton .jstree-clicked{
+    color:white;
+    font-weight:bolder;
+}
+#sidebarMenu .jstree-proton .jstree-hovered{
+        background-color:gray;
+        color:white;
+        font-weight:bolder;
+}

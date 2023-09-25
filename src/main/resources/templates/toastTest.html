@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<style>
+
+</style>
+</head>
+<body>
+
+    <div id="grid"></div>
+    <!--토스트 그리드 엑셀-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <!--토스트 그리드-->
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+    <script th:inline="javaScript">
+
+  /*<![CDATA[*/
+    let data = /*[[ ${board_list} ]]*/;
+
+  /*]]*/
+ window.onload = function(){
+<!--        grid.resetData(data);-->
+    }
+    var grid = new tui.Grid({
+            el: document.getElementById('grid'),
+            data : data,
+            scrollX: false,
+            scrollY: false,
+            rowHeaders: ['rowNum','checkbox'],
+            columns:
+            [
+                {
+                    header: '문서번호',
+                    name: 'SEQ',
+                    sortable: true
+                },
+                {
+                    header: '부서명',
+                    name: 'DEPT_NAME',
+                },
+                {
+                    header: '작성자',
+                    name: 'USER_NM'
+                },
+                {
+                    header: '직위',
+                    name: 'POSITION'
+                },
+                {
+                    header: '메뉴명',
+                    name: 'MENU_NAME',
+                },
+                {
+                    header: '문서버전',
+                    name: 'DOC_VER',
+                },
+                {
+                    header: '작성일',
+                    name: 'CRTDATE',
+                    sortable: true,
+                    options:
+                        {
+                        format: 'yyyy.MM.dd'
+                        }
+                }
+            ]
+<!--            contextMenu: ({ rowKey, columnName }) => (-->
+<!--                    [-->
+<!--                      [-->
+<!--                        {-->
+<!--                          name: 'export',-->
+<!--                          label: '내보내기',-->
+<!--                          action: () => {-->
+<!--                            grid.export('csv');-->
+<!--                          }-->
+<!--                        }-->
+<!--                      ]-->
+<!--                    ]-->
+<!--            )-->
+        });
+ tui.Grid.applyTheme("clean");
+ tui.Grid.setLanguage('ko');
+ grid.on('click',ev => {
+    console.log(ev.rowKey);
+})
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+
+        #jqgrid_table{
+        	position:relative;
+        	font-size:15px;
+        	cursor:pointer;
+        }
+        .ui-widget-content jqgrow ui-row-ltr td{
+            cursor:pointer;
+        }
+        .ui-jqgrid-title{
+            font-size:15px;
+        }
+        .ui-jqgrid tr.ui-row-ltr {
+          text-align:center;
+        }
+        #jqGridPager {
+           font-size:13px;
+        }
+        .ui-icon ui-icon-search{
+          font-size:30px;
+        }
+        .ui-widget ui-widget-content ui-corner-all ui-jqdialog jqmID1{
+           font-size:15px;
+        }
+        .ui-jqgrid .ui-jqgrid-hbox{
+          padding-right: 0px;
+        }

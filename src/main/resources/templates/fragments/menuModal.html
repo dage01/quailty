@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<style>
+
+</style>
+<div th:fragment="menuModalFragment">
+    <!-- Modal -->
+    <!--        <div class="modal  fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+    <link rel="stylesheet" href="./assets/dist/themes/proton/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <div class="modal  fade" id="staticBackdrop" th:id="Modal2" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg  modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " style="font-size:15px;" id="staticBackdropLabel">메뉴 변경</h5>
+                    <button type="button" class="btn-close DeptModal_close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="tree" id="tree"></div>
+                <div class="modal-body" style="height: auto;">
+                    <div class="row mb-3">
+                        <div class="col col-sm-8">
+                            <label class="label-cont"></label><label for="menu_h_s">폴더 선택</label>
+                            <select id="menu_h_s" style="width:100%" onchange="get_s_menu($(this).val());">
+                                <option disabled selected value="-1">폴더를 선택하여 주세요.</option>
+                                <option th:each="list : ${menu_list_h}" th:text="${list.NAME}" th:value="${list.MENU_CODE}"></option>
+                            </select>
+                        </div>
+
+                    </div>
+<!--                    <div class="row mb-3">-->
+<!--                        <div class="col col-sm-8">-->
+<!--                            <label class="label-cont"></label><label for="menu_s">하위 폴더 선택</label>-->
+<!--                            <select id="menu_s" style="width:100%">-->
+<!--                                <option disabled selected value="-1">하위 폴더를 선택하여 주세요.</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <button id="modMenu" class="btn btn-primary">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript" type="text/javascript">
+	$(function() {
+		<!--contextmenu 오픈시 노드선택 할지-->
+        $.jstree.defaults.contextmenu.select_node=false;
+
+
+        <!--포맷전 데이터 값-->
+		var arr = /*[[${data}]]*/;
+		<!--포맷후 저장할 데이터 변수-->
+        var data;
+        var nowId;
+
+        /*
+            PARENT  = 부모
+            id  = 키값(MENU_CODE)
+            부모코드밑에 자식 코드가 있을경우
+            children 을 만든다
+        */
+        function getData(arr){
+            const {res} = arr.reduce((acc,curr)=>{
+                  if(acc.parentMap[curr.PARENT]){
+                    (acc.parentMap[curr.PARENT].children = acc.parentMap[curr.PARENT].children || []).push(curr);
+                  } else {
+                    acc.res.push(curr);
+                  }
+                    acc.parentMap[curr.id] = curr;
+                    return acc;
+              },
+                {parentMap: {}, res: []}
+              );
+
+            <!--jsTree 구조로 변경-->
+            return res;
+        }
+
+
+        data = getData(arr);
+
+    $('#tree').jstree({
+        'core' : {
+                "data":data, <!--데이터 입력 -->
+                 "themes": {
+                    'name': 'proton',
+                    'responsive': false
+                 },
+                 "animation":0,
+            },
+        'types': {
+            '#':{
+                "valid_children": ["root","default"]
+            },
+            "root": {
+                "icon": "bi bi-folder-fill text-danger",
+                "valid_children": ["default"]
+            },
+            "default": {
+                "icon": "bi bi-folder-fill text-warning"
+            },
+            "myType": {
+                "icon": "/assets/images/tree_icon.png"
+            }
+        },
+        "contextmenu": {
+                "items":{
+                        "create":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "생성",
+                            "action" : function(data){
+                                        var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                        var menu_code = obj.id;
+                                        var node = $('#tree').jstree(true).get_node(menu_code);
+                                        var parentNode = $('#tree').jstree(true).get_node(node.parent);
+                                        var parentNodeId = parentNode.id;
+                                        popUp(menu_code);
+                                },
+                            "icon":"bi bi-plus-circle-fill text-primary"
+                        },
+                        "update":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "수정",
+                            "action" : function(data){
+                                      var inst = $.jstree.reference(data.reference),
+                                      obj = inst.get_node(data.reference);
+                                      var menu_code = obj.id;
+                                      updateMenu(menu_code);
+                                },
+                            "icon":"bi bi-pencil-fill text-success"
+                        },
+                        "delete":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "삭제",
+                            "action" : function(data){
+                                        var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                        var MENU_CODE = obj.id;
+                                        var node = $('#tree').jstree(true).get_node(MENU_CODE);
+                                        var parentNode = $('#tree').jstree(true).get_node(node.parent);
+                                        var parentNodeId = parentNode.id;
+
+
+
+                                        if(confirm("메뉴를 삭제 하시겠습니까?")){
+                                                $.ajax({
+                                                    url:"/deleteCkFolder/"+MENU_CODE,
+                                                    type:"post",
+                                                    success:function(data){
+                                                        if(confirm("폴더 내부의 "+data+"건의 데이터가 있습니다. 그래도 삭제 하시겠습니까?")){
+                                                            $.ajax({
+                                                                url:"/deleteFolder/"+MENU_CODE,
+                                                                method:"post",
+                                                                success:function(data){
+                                                                    if(data == 1){
+                                                                        console.log("삭제 성공");
+                                                                    }else alert("메뉴코드 전달값에 문제가 있습니다.");
+                                                                },
+                                                                complete:function(){
+                                                                     $.ajax({
+                                                                        url:"/getMenuData",
+                                                                        method:"post",
+                                                                        success:function(newMenu){
+                                                                            var newMenu = getData(newMenu);
+                                                                             $('#tree').jstree(true).settings.core.data = newMenu;
+                                                                             $('#tree').jstree(true).refresh();
+                                                                        }
+                                                                     })
+                                                                }
+                                                            })
+                                                        }else{ return false;}
+                                                    }
+                                                })
+                                            }else{
+                                                return false;
+                                        } <!--end if-->
+                                },
+                            "icon":"bi bi-x-circle-fill text-danger"
+                        } <!--end delete menu-->
+                } <!--end custom menu-->
+        },
+        "plugins":['search','themes','ui','types','contextmenu']
+     }); <!--end jstree init-->
+
+});
+
+    </script>
+<!--    <script>-->
+<!--        function get_s_menu(MENU_CODE){-->
+<!--        alert("a");-->
+<!--        $('#menu_s').empty();-->
+<!--        $.ajax({-->
+<!--            url:"/get_s_menu",-->
+<!--            data:{"p_menu_code":MENU_CODE},-->
+<!--            success:function(data){-->
+
+<!--                if(data.length==0 || data ==null){-->
+<!--                  var option = $("<option disabled >하위 폴더 생성 이후 사용하여 주세요.</option>");-->
+<!--                  $('#menu_s').append(option);-->
+<!--                }-->
+<!--                for(var i=0; i<data.length;i++){-->
+<!--                     var option = $("<option value="+data[i].MENU_CODE+">"+data[i].NAME+"</option>");-->
+<!--                     $('#menu_s').append(option);-->
+<!--                }-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+<!--    </script>-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js"></script>
+    <script>
+        $("#tree").bind('select_node.jstree', function(event, data){
+
+                        $(".main_div").empty(); //작성 페이지 삭제 후 리스트 출력
+                        var path_url = data.instance.get_node(data.selected).id;
+                            $.ajax({
+                                url: "/menu_code/" + path_url,
+                                type: "post",
+                                async: false,
+                                success: function(data) {
+
+            //                        $(this).removeClass("active");
+                                    if (data.length > 0) {
+                                        JSON.stringify(data); // data parsing
+                                        $("#jqgrid_table").clearGridData(); // clear
+                                        startGrid2(); //그리드 그리기
+                                        $("#jqgrid_table").jqGrid('setCaption', data[0].MENU_NAME); //caption 동적 변화
+
+                                        $("#jqgrid_table").jqGrid("setGridParam", {
+                                            data: data
+                                        }).trigger("reloadGrid");
+
+                                    } else {
+                                        $("#jqgrid_table").clearGridData();
+                                        startGrid2();
+                                        $("#jqgrid_table").jqGrid('setCaption', '등록된 데이터가 없습니다.');
+                                    }
+                                }
+                            });
+             });
+    </script>
+</div>
+
+</html>

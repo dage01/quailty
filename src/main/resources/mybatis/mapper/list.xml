@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dage.quality.DAO.ListDao">
+
+    <insert id="write">
+        insert into thr_qul_list
+        (
+        SEQ
+        ,MENU_CODE
+        ,TITLE
+        ,FILE_TAG
+        ,USER_NM
+        ,CRTDATE
+        ,MODDATE
+        ,AUDH_LEVEL
+        ,DOC_VER
+        ,DEPT_NAME
+        ,PROJ_CODE
+        ,CONTENT
+        ,MENU_NAME
+        ,position
+        ,USER_NO
+        ,EMP_NO
+        ,DOC_MONTH
+        ,DOC_TURN
+        ,DOC_SDT
+        ,DOC_EDT
+        )
+        values
+        (
+        THR_QUL_LIST_SEQ.nextval
+        ,#{menu_code}
+        ,#{title}
+        ,'N'
+
+        ,#{name}
+        ,sysdate
+        ,null
+        ,null
+        ,'1.0'
+        ,#{dept_name}
+        ,#{proj_code}
+        ,#{content}
+        ,#{menu_name}
+        ,#{position}
+        ,#{user_no}
+        ,#{emp_no}
+        ,TO_DATE(#{doc_month},'YYYY-MM')
+        ,#{doc_turn}
+        ,TO_DATE(#{doc_sdt},'YYYY-MM-DD')
+        ,TO_DATE(#{doc_edt},'YYYY-MM-DD')
+        )
+
+    </insert>
+
+    <insert id="write2">
+
+            insert into thr_qul_list
+            (
+            SEQ
+            ,MENU_CODE
+            ,TITLE
+            ,FILE_TAG
+            ,USER_NM
+            ,CRTDATE
+            ,MODDATE
+            ,AUDH_LEVEL
+            ,DOC_VER
+            ,DEPT_NAME
+            ,PROJ_CODE
+            ,CONTENT
+            ,MENU_NAME
+            ,POSITION
+            ,USER_NO
+            ,EMP_NO
+            ,DOC_DT
+            ,TRN_CASE
+            )
+            values
+            (
+            THR_QUL_LIST_SEQ.nextval
+            ,#{menu_code}
+            ,#{title}
+            ,'N'
+
+            ,#{name}
+            ,sysdate
+            ,null
+            ,null
+            ,'1.0'
+            ,#{dept_name}
+            ,#{proj_code}
+            ,#{content}
+            ,#{menu_name}
+            ,#{position}
+            ,#{user_no}
+            ,#{emp_no}
+            ,TO_DATE(#{doc_dt},'YYYY-MM-DD')
+            ,#{trn_case}
+            )
+    </insert>
+
+    <insert id="write_op">
+        insert into thr_qul_list
+        (
+        SEQ
+        ,MENU_CODE
+        ,TITLE
+        ,FILE_TAG
+        ,USER_NM
+        ,CRTDATE
+        ,MODDATE
+        ,AUDH_LEVEL
+        ,DOC_VER
+        ,DEPT_NAME
+        ,PROJ_CODE
+        ,CONTENT
+        ,MENU_NAME
+        ,POSITION
+        ,USER_NO
+        ,EMP_NO
+        ,DOC_MONTH
+        ,OP_NUM
+        )
+        values
+        (
+        THR_QUL_LIST_SEQ.nextval
+        ,#{menu_code}
+        ,#{title}
+        ,'N'
+        ,#{name}
+        ,sysdate
+        ,null
+        ,null
+        ,'1.0'
+        ,#{dept_name}
+        ,#{proj_code}
+        ,#{content}
+        ,#{menu_name}
+        ,#{position}
+        ,#{user_no}
+        ,#{emp_no}
+        ,TO_DATE(#{doc_month},'YYYY-MM')
+        ,#{op_num}
+        )
+    </insert>
+    <insert id="write_im">
+        insert into thr_qul_list
+        (
+        SEQ
+        ,MENU_CODE
+        ,TITLE
+        ,FILE_TAG
+        ,USER_NM
+        ,CRTDATE
+        ,MODDATE
+        ,AUDH_LEVEL
+        ,DOC_VER
+        ,DEPT_NAME
+        ,PROJ_CODE
+        ,CONTENT
+        ,MENU_NAME
+        ,POSITION
+        ,USER_NO
+        ,EMP_NO
+        ,DOC_DT
+        ,CK_POINT
+        )
+        values
+        (
+        THR_QUL_LIST_SEQ.nextval
+        ,#{menu_code}
+        ,#{title}
+        ,'N'
+        ,#{name}
+        ,sysdate
+        ,null
+        ,null
+        ,'1.0'
+        ,#{dept_name}
+        ,#{proj_code}
+        ,#{content}
+        ,#{menu_name}
+        ,#{position}
+        ,#{user_no}
+        ,#{emp_no}
+        ,TO_DATE(#{doc_dt},'YYYY-MM-DD')
+        ,#{ck_point}
+        )
+    </insert>
+
+    <update id="mod">
+        update thr_qul_list
+        set
+            MENU_CODE = to_char(#{menu_code},'FM0000'),
+            MENU_NAME = #{menu_name},
+            TITLE = #{title},
+            MODDATE = sysdate,
+            CONTENT =#{content},
+            DOC_VER = #{doc_ver},
+            MODUSER = #{moduser},
+            DEPT_NAME = #{dept_name},
+            PROJ_CODE = #{proj_code},
+            DOC_MONTH = TO_DATE(#{doc_month},'YYYY-MM'),
+            DOC_TURN = #{doc_turn},
+            DOC_SDT = TO_DATE(#{doc_sdt},'YYYY-MM-DD'),
+            DOC_EDT = TO_DATE(#{doc_edt},'YYYY-MM-DD')
+        where SEQ =#{seq}
+    </update>
+
+    <update id="mod2">
+        update thr_qul_list
+        set
+        MENU_CODE = to_char(#{menu_code},'FM0000'),
+        MENU_NAME = #{menu_name},
+        TITLE = #{title},
+        MODDATE = sysdate,
+        CONTENT =#{content},
+        DOC_VER = #{doc_ver},
+        MODUSER = #{moduser},
+        DEPT_NAME = #{dept_name},
+        PROJ_CODE = #{proj_code},
+        DOC_DT = TO_DATE(#{doc_dt},'YYYY-MM-DD'),
+        TRN_CASE = #{trn_case}
+        where SEQ =#{seq}
+    </update>
+
+    <update id="mod_op">
+        update thr_qul_list
+        set
+        TITLE = #{title},
+        MODDATE = sysdate,
+        CONTENT =#{content},
+        DOC_VER = #{doc_ver},
+        MODUSER = #{moduser},
+        DOC_MONTH = TO_DATE(#{doc_month},'YYYY-MM'),
+        OP_NUM = #{op_num}
+        where SEQ =#{seq}
+    </update>
+    <update id="mod_im">
+        update thr_qul_list
+        set
+        TITLE = #{title},
+        MODDATE = sysdate,
+        CONTENT =#{content},
+        DOC_VER = #{doc_ver},
+        MODUSER = #{moduser},
+        DOC_DT = TO_DATE(#{doc_dt},'YYYY-MM-DD'),
+        CK_POINT = #{ck_point}
+        where SEQ =#{seq}
+    </update>
+
+    <select id="cmt_select" resultType="com.dage.quality.DTO.ListDto">
+        select CMT1,
+        CMT2,
+        CMT3,
+        CMT4,
+        CMT5
+        from THR_QUL_LIST_CODE
+        where menu_code = '0004'
+    </select>
+
+    <select id="proj_list" resultType="com.dage.quality.DTO.ListDto">
+        select
+
+        COM_VALUE2 dept_name,
+        COM_VALUE proj_code
+        from THR_QUL_COM
+
+        where COM_CD = '02'
+        and com_value2 is not null
+        and LENGTH(com_value) > 4
+
+    </select>
+
+    <select id="list_detail" resultType="com.dage.quality.DTO.ListDto">
+        select
+        crtdate date_yn,
+        '' date_yn2
+
+        from thr_qul_list
+
+        where proj_code = #{seq} and doc_turn = '1'
+
+
+    </select>
+
+    <select id="dept_list" resultType="com.dage.quality.DTO.ListDto">
+        select WM_CONCAT(e_mail) e_mail
+        from THR_PM_BASE
+        where (sub_dept_code in (#{proj_code},'3610')
+        and retired_dt is null) or emp_no in ('26756','155')
+
+    </select>
+
+    <update id="cmt">
+        update thr_qul_list_code
+        set
+        CMT1 = #{cmt1},
+        CMT2 = #{cmt2},
+        CMT3 = #{cmt3},
+        CMT4 = #{cmt4},
+        CMT5 = #{cmt5}
+        where menu_code = '0004'
+
+    </update>
+
+    <select id="list_info" resultType="com.dage.quality.DTO.ListDto">
+        select
+        a.SEQ
+        ,(Select Count(*)
+        From   THR_QUL_LIST_COM c
+        Where  A.SEQ = c.LIST_SEQ) as CMT
+        ,a.MENU_CODE
+        ,a.TITLE
+        ,a.FILE_TAG
+        ,a.USER_NM
+        ,b.USER_ID
+        ,a.EMP_NO
+        ,a.USER_NO
+        ,to_char(a.CRTDATE,'YYYY-MM-DD') CRTDATE
+        ,a.MODDATE
+        ,a.AUDH_LEVEL
+        ,a.DOC_VER
+        ,a.DEPT_NAME
+        ,a.PROJ_CODE
+        ,a.CONTENT
+        ,a.MENU_NAME
+        ,a.POSITION
+        ,to_char(DOC_DT,'YYYY-MM-DD') DOC_DT
+        ,TRN_CASE
+        ,to_char(DOC_MONTH,'YYYY-MM') DOC_MONTH
+        ,DOC_TURN
+        ,to_char(DOC_SDT,'YYYY-MM-DD') DOC_SDT
+        ,to_char(DOC_EDT,'YYYY-MM-DD') DOC_EDT
+        ,OP_NUM
+        ,CK_POINT
+        from
+        thr_qul_list a, tcc_employe b
+        where a.user_no = b.user_no
+        and seq = #{seq}
+    </select>
+
+    <select id="getFinalSeq" resultType="string">
+        select
+            MAX(SEQ)
+        from
+            thr_qul_list
+        where
+            user_no =#{user_no}
+    </select>
+
+    <update id="updateFileTag" >
+        update
+            thr_qul_list
+        set
+            file_tag = 'Y'
+
+        where
+            seq = #{seq}
+    </update>
+    <insert id="insertFileInfo">
+        insert into thr_qul_list_file
+            (
+            seq
+            ,list_seq
+            ,origin_nm
+            ,save_nm
+            ,path
+            )
+        values
+            (
+            thr_qul_list_file_seq.nextval
+            ,#{seq}
+            ,#{origin_nm}
+            ,#{save_nm}
+            ,#{path}
+            )
+    </insert>
+    <delete id="delete_list">
+        delete from thr_qul_list where seq =#{seq}
+    </delete>
+</mapper>

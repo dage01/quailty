@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<style>
+
+</style>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="fragments/head :: headFragment">
+  <br>
+
+</head>
+
+<link th:href="@{/css/side.css}" rel="stylesheet">
+<link th:href="@{/css/main.css}" rel="stylesheet">
+<script th:inline="javaScript" th:src="@{js/auth2.js}"></script>
+<script th:inline="javaScript" th:src="@{js/menu.js}">
+
+
+</script>
+
+<body>
+
+
+<div style="text-align:center;">
+    <a class="fs-5" th:href="@{/main}"><img src="img/logo.png"></a>
+    <h3 class=" text-dark mt-1 text-center" th:text="${session.dto.dept_name}+'/'+ ${session.dto.user_nm}+' '+${session.dto.position}"></h3>
+    <button class="btn btn-danger gx-3 w-1 col-sm-1 mb-4"  onclick="location.href='/'">로그아웃</button>
+
+    <button class="btn btn-primary gx-3 w-1 col-sm-1 mb-4"  onclick="location.href='/main'">문서보기</button>
+</div>
+
+<div class="row g-3 h-50" style="text-align:center;">
+<!--  <div class="col col-md-2 ">-->
+<!--    <div class th:replace="fragments/menu :: menuFragment"></div>-->
+
+<!--  </div>-->
+  <div class="col col-md-5 mh-50" id="main_div">
+    <table id="jqgrid_table_main" class="table   text-nowrap  table-striped"></table>
+    <div  id="jqGridPager_main"></div>
+
+  </div>
+
+  <div class="col col-md-4 mh-50" id="main_div2">
+    <table id="jqgrid_table_main2" class="table   text-nowrap  table-striped"></table>
+    <div  id="jqGridPager_main2"></div>
+
+  </div>
+
+  <div class="col col-md-3 mh-50" id="main_div3">
+    <table id="jqgrid_table_main3" class="table   text-nowrap  table-striped"></table>
+    <div  id="jqGridPager_main3"></div>
+
+  </div>
+
+
+
+</div>
+
+
+
+<script th:inline="javaScript">
+
+
+  /*<![CDATA[*/
+    let data = /*[[ ${proj_list} ]]*/;
+
+  /*]]*/
+
+
+
+</script>
+
+<script>
+
+
+</script>
+
+</body>
+
+</html>

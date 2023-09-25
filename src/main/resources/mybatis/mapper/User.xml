@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dage.quality.DAO.UserDao">
+    <select id="chk_folder_name" resultType="string">
+        select
+            name
+        from thr_qul_list_code
+        where name =#{name}
+    </select>
+   <insert id="addFolder">
+       insert into thr_qul_list_code
+       (
+           MENU_CODE,
+           NAME,
+           CRTUSERNO,
+           MODUSERNO,
+           CRTDATE,
+           P_MENU_CODE
+       )
+       values(
+       to_char((select nvl(MAX(MENU_CODE),0) from thr_qul_list_code)+1,'FM0000'),
+       #{name},
+       #{user_no},
+       null,
+       SYSDATE
+       <if test='P_MENU_CODE== "0"'>
+           ,null
+       </if>
+       <if test='P_MENU_CODE!= "0"'>
+           ,to_char(#{P_MENU_CODE},'FM0000')
+       </if>
+       )
+   </insert>
+    <select id="chk_folder_data" resultType="int">
+        select (*) from thr_qul_list
+        where menu_code =#{menu_code}
+    </select>
+    <select id="chk_folder_data_h" resultType="int">
+        select count(*)
+        from thr_qul_list a ,
+        thr_qul_list_code b
+        where
+        a.menu_code = b.menu_code
+        and (b.menu_code = #{menu_code} or b.p_menu_code = #{menu_code})
+
+    </select>
+    <select id="chk_folder_data_s" resultType="int">
+        select count(*) from thr_qul_list where menu_code =#{menu_code}
+    </select>
+
+
+    <select id="trn_list" resultType="hashMap">
+        select
+        TRN_CASE
+        from thr_qul_trn_code
+        union
+        select distinct
+        TRN_CASE
+        from thr_qul_list
+        where TRN_CASE is not null
+    </select>
+
+
+    <delete id="main_folder_d">
+        delete
+            thr_qul_list_code
+        where
+            menu_code
+        in
+        (
+            SELECT
+                to_char(MENU_CODE,'FM0000')MENU_CODE
+            FROM
+                thr_qul_list_code a
+            START WITH MENU_CODE =#{menu_code}
+            connect by prior  MENU_CODE = P_MENU_CODE
+        )
+    </delete>
+    <delete id="sub_folder_d">
+        delete
+            thr_qul_list_code
+        where
+            MENU_CODE = #{menu_code}
+    </delete>
+    <update id="main_folder_m">
+        {
+            call
+                DECLARE
+                    BEGIN
+                        update thr_qul_list_code set name =#{name} where menu_code =#{menu_code} ;
+                        update thr_qul_list set menu_name =#{name} where menu_code =#{menu_code} ;
+                    END
+        }
+
+    </update>
+    <select id="user_list" resultType="hashMap">
+        select
+
+        user_nm,
+        user_id,
+        sf_get_position_name(empno) as position,
+        empno
+
+        from tcc_employe
+        where
+        USE_FG!='F'
+        and empno is not null
+        order by user_nm
+    </select>
+    <select id="get_menu_name" resultType="string">
+        SELECT
+            name,
+            cmt1,
+            cmt2,
+            cmt3,
+            cmt4,
+            cmt5
+
+        FROM
+            thr_qul_list_code
+        WHERE
+            menu_code = #{menu_code}
+    </select>
+
+    <select id="get_cmt_name" resultType="string">
+        SELECT
+        cmt1,
+        cmt2,
+        cmt3,
+        cmt4,
+        cmt5
+
+        FROM
+        thr_qul_list_code
+        WHERE
+        menu_code = #{menu_code_s}
+    </select>
+
+</mapper>

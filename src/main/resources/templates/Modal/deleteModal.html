@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+
+
+<div style="" class="container-fluid" id="main_div" >
+    <div class="row" >
+        <div class=" col-sm-12" style="margin-top:20px;">
+            <div class="card" style="height:450px">
+                <div class="card-header">
+                    <h5>폴더 삭제 <i class="bi bi-folder-minus fs-5 text-danger"></i> </h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-3">상위 폴더</h5>
+                    <div class="row mb-3 " >
+                        <div class="col col-sm-8">
+                            <select id="menu_h" style="width:100%" onchange="get_s_menu($(this).val());">
+                                <option>상위폴더를 선택하여 주세요.</option>
+                                <option th:each="list : ${menu_list_h}" th:text="${list.NAME}" th:value="${list.MENU_CODE}"></option>
+                            </select>
+                        </div>
+                        <div class="col col-sm-4">
+                            <button class="btn btn-danger" id="delete_h_btn">폴더 삭제</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5 class="mb-3">하위 폴더</h5>
+                    <div class="row mb-3 " >
+                        <div class="col col-sm-8">
+                            <select id="menu_list_s" style="width:100%">
+                            </select>
+                        </div>
+                        <div class="col col-sm-4">
+                            <button class="btn btn-danger" id="delete_s_btn">폴더 삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(function(){
+    $("#menu_h").select2();
+    $("#menu_list_s").select2({
+     dropdownParent: $('#main_div')
+    });
+
+    $("#delete_h_btn").on("click",function(){
+
+        var menu_code = $("#menu_h option:selected").val();
+
+        if(menu_code==null || menu_code ==""){
+            alert("폴더명을 입력해주시기 바랍니다.");
+            $("#folder_nm").focus();
+            return false;
+        }
+        $.ajax({
+            url:"/deleteCkFolder/h",
+            data:{"menu_code":menu_code},
+            method:"post",
+            success:function(data){
+                if(!confirm(data+"건의 데이터가 있습니다. 삭제 하시겠습니까?")){
+                    window.close();
+                }else{
+                 $.ajax({
+                    url:"/deleteFolder/h",
+                    data:{"menu_code":menu_code},
+                    method:"post",
+                    success:function(data){
+                        alert("삭제가 완료되었습니다.");
+                         opener.parent.location.reload();
+                         window.close();
+                    }
+                 })
+             }
+
+
+            }
+        })
+    })
+    $("#delete_s_btn").on("click",function(){
+        var menu_code = $("#menu_list_s option:selected").val();
+
+        if(menu_code==null || menu_code ==""){
+            alert("폴더명을 입력해주시기 바랍니다.");
+            $("#folder_nm").focus();
+            return false;
+        }
+        $.ajax({
+            url:"/deleteCkFolder/s",
+            data:{"menu_code":menu_code},
+            method:"post",
+            success:function(data){
+                if(!confirm(data+"건의 데이터가 있습니다. 삭제 하시겠습니까?")){
+                    window.close();
+                }else{
+                 $.ajax({
+                    url:"/deleteFolder/s",
+                    data:{"menu_code":menu_code},
+                    method:"post",
+                    success:function(data){
+                        alert("삭제가 완료되었습니다.");
+                         opener.parent.location.reload();
+                         window.close();
+                    }
+                 })
+             }
+
+
+            }
+        })
+    })
+})
+
+    function get_s_menu(MENU_CODE){
+     $('#menu_list_s').empty();
+        $.ajax({
+            url:"/get_s_menu",
+            data:{"p_menu_code":MENU_CODE},
+            success:function(data){
+                console.log(data);
+                for(var i=0; i<data.length;i++){
+                     var option = $("<option value="+data[i].MENU_CODE+">"+data[i].NAME+"</option>");
+                     $('#menu_list_s').append(option);
+                }
+            }
+        })
+    }
+
+</script>
+
+
+<script th:inline="javascript">
+    var selected_menu_code =/*[[${MENU_CODE}]]*/
+    if(selected_menu_code!=null){
+        $('#menu_h').val(selected_menu_code).attr("selected", "selected");
+        get_s_menu(selected_menu_code);
+        $('#menu_h').attr("disabled","true");
+    }
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

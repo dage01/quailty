@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head :: headFragment"></head>
+<link th:href="@{/css/index.css}" rel="stylesheet">
+<script th:src="@{/js/index.js}"></script>
+<script>
+if(/MSIE\D|Trident.*.rv:/.test(navigator.userAgent)){
+
+    setTimeout(function(){
+        location.href="/ie";
+    },1);
+}
+
+</script>
+<body>
+<div class="container" style="text-align:center;" id="warp">
+    <div class="mt-5" id="imgDiv">
+        <img class=" mt-5 img-fluid" th:src="@{/img/main.png}" id="ideaImg" src="/img/main.png">
+    </div>
+    <div class="" >
+        <h4 class="pb-2 text-dark">DONG-AH SAFETY(DAS)</h4>
+        </h6>
+        <form>
+            <table id="mainT" style="display:inline-block">
+                <tr>
+                    <td>아이디</td>
+                    <td >
+                        <input  id="user_id" name="user_id" class="mb-2 col-12" type="text">
+                    </td>
+                </tr>
+
+                <tr >
+                    <td>비밀번호</td>
+                    <td>
+                        <input class="col-12" id="user_pwd" name="user_pwd" type="password" autocomplete="false">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="1">
+                        <button type="button"  id="loginBtn" onclick="confirm();"  class="col-12 btn btn-success ">로그인</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div>
+            <img class="mt-1" th:src="@{/img/logo.png}" src="/img/logo.png" width="200px"> <br>
+        </div>
+    </div>
+
+
+    <p class="mt-5">
+    &copy; Copyright 2023 Dong-Ah Geological Engineering Company Ltd. All rights reserved.
+    </p>
+</div>
+
+</body>
+</html>

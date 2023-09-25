@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--<head th:replace="fragments/head :: headFragment">-->
+<head th:replace="fragments/head :: headFragment">
+
+</head>
+
+<body>
+<div th:fragment="menuFragment">
+    <link rel="stylesheet" href="./assets/dist/themes/proton/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <!--      <div id="side_menu" style="overflow-x: hidden;" class="d-flex flex-column  p-3  border-end border-3" >-->
+
+    <!--            <span  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto  text-decoration-none">-->
+    <!--                <a class="fs-4" th:href="@{/main}"><img src="img/logo.png"></a>-->
+    <!--            </span>-->
+    <!--          <div class="col-lg-12 ">-->
+    <!--              <h3 class="text-center text-dark mt-1" th:text="${session.dto.dept_name}+'/'+ ${session.dto.user_nm}+' '+${session.dto.position}"></h3>-->
+    <!--              <p>-->
+    <!--                   <span  class=" align-items-center mb-3 mb-md-0 me-md-auto">-->
+    <!--                    <button class="btn btn-danger btn-sm logout">로그아웃</button>-->
+    <!--                   </span>-->
+    <!--              </p>-->
+    <!--          </div>-->
+    <!--            <hr>-->
+    <!--          <div class="flex-shrink-0 p-3 " style="overflow-x:auto;">-->
+    <!--              <p  class="  text-dark " style="font-size:1.2em" aria-current="page">-->
+    <!--                  문서관리 EDMS <i class="bi bi-folder"></i>-->
+    <!--              </p>-->
+    <!--              <button class="btn btn-primary col-sm-12 mb-3" style="width:170px;" onclick="location.href='/write'">문서등록</button>-->
+
+    <!--              <ul class="list-unstyled ps-0 text-nowrap">-->
+    <!--&lt;!&ndash;                  <li class="mb-1" id="auth_menu" th:if="${session.auth} and (${session.auth.ADD_FOLDER}=='T' or ${session.auth.MOD_FOLDER}=='T' or ${session.auth.DELETE_FOLDER}=='T' or ${session.auth.DOC_AUTH}=='T' or  ${session.auth.ADMIN_TG}=='B')">&ndash;&gt;-->
+    <!--                  <li class="mb-1" id="auth_menu">-->
+    <!--                      <button class="btn btn-toggle  align-items-center rounded collapsed " data-bs-toggle="collapse" data-bs-target="#admin_menu" aria-expanded="false">-->
+    <!--                          관리자 메뉴 <i class="bi bi-gear"></i>-->
+    <!--                      </button>-->
+
+    <!--                      <div class="collapse ms-2" id="admin_menu">-->
+
+    <!--                          <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#folder" aria-expanded="false">-->
+    <!--                              <i class="bi bi-arrow-return-right"></i> 폴더 관리 <i class="bi bi-folder-fill  text-warning"></i>-->
+    <!--                          </button>-->
+
+    <!--                          <div class="collapse ms-3" id="folder">-->
+    <!--                              <ul class="btn-toggle-nav  pb-1 ">-->
+    <!--&lt;!&ndash;                                  <li th:if="${session.auth.ADD_FOLDER}=='T'">&ndash;&gt;-->
+    <!--                                  <li >-->
+    <!--                                      <a  class="nav-link link-dark" th:id="openModal" onclick="popUp();">-->
+    <!--                                          폴더추가-->
+    <!--                                      </a>-->
+    <!--                                  </li>-->
+    <!--&lt;!&ndash;                                  <li th:if="${session.auth.MOD_FOLDER}=='T'">&ndash;&gt;-->
+    <!--                                  <li >-->
+    <!--                                      <a  class="nav-link link-dark" th:id="openModifyModal">-->
+    <!--                                          폴더명변경-->
+    <!--                                      </a>-->
+    <!--                                  </li>-->
+    <!--&lt;!&ndash;                                  <li th:if="${session.auth.DELETE_FOLDER}=='T'">&ndash;&gt;-->
+    <!--                                  <li >-->
+    <!--                                      <a  class="nav-link link-dark" th:id="openDeleteModal">-->
+    <!--                                          폴더삭제-->
+    <!--                                      </a>-->
+    <!--                                  </li>-->
+    <!--                              </ul>-->
+    <!--                          </div>-->
+    <!--                          <br>-->
+    <!--                          <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#documents" aria-expanded="false">-->
+    <!--                              <i class="bi bi-arrow-return-right"></i> 문서 관리 <i class="bi bi-folder-fill  text-warning"></i>-->
+    <!--                          </button>-->
+
+    <!--                          <div class="collapse ms-3" id="documents">-->
+    <!--                              <ul class="btn-toggle-nav  pb-1 ">-->
+    <!--&lt;!&ndash;                                  <li th:if="${session.auth.DOC_AUTH}=='T'">&ndash;&gt;-->
+    <!--                                  <li >-->
+    <!--                                      <a class="nav-link link-dark"  th:href="@{/main}">-->
+    <!--                                          전체문서조회-->
+    <!--                                      </a>-->
+    <!--                                  </li>-->
+    <!--&lt;!&ndash;                                  <li th:if="${session.auth.ADMIN_TG}=='B' or ${session.auth.ADMIN_TG}=='C'">&ndash;&gt;-->
+    <!--                                  <li >-->
+    <!--                                      <a  class="nav-link link-dark" th:id="authModal">-->
+    <!--                                          권한관리-->
+    <!--                                      </a>-->
+    <!--                                  </li>-->
+    <!--                              </ul>-->
+    <!--                          </div>-->
+    <!--                      </div>-->
+    <!--                  </li>-->
+    <!--              </ul>-->
+    <!--              <hr>-->
+
+    <!--              <label class="text-dark mb-2" for="searchM">메뉴검색 <i class="bi bi-search"></i></label>-->
+    <!--              <input  type="text" id="searchM" value="" class="input form-control" style="margin:0em auto 1em auto; display:block; padding:4px; border-radius:4px; border:1px solid silver;">-->
+    <!--              <div id="tree"></div>-->
+
+    <!--          </div>-->
+    <!--    </div>-->
+
+    <!--    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">-->
+    <!--        <a class="navbar-brand col-md-12 col-lg-2 me-0 px-3" href="#">Company name</a>-->
+    <!--        <button class="navbar-toggler position-absolute end-0 d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">-->
+    <!--            <span class="navbar-toggler-icon"></span>-->
+    <!--        </button>-->
+    <!--        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
+    <!--        <div class="navbar-nav">-->
+    <!--            <div class="nav-item text-nowrap">-->
+    <!--                <a class="nav-link px-3" href="#">Sign out</a>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </header>-->
+
+    <div class="text-center my-3">
+        <button class="navbar-toggler btn btn-outline-dark position-absolute end-0 d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list"></i>
+        </button>
+        <span  class="align-items-center   text-decoration-none">
+                        <a class="fs-4" th:href="@{/main}"><img src="img/logo.png"></a>
+            </span>
+        <!--        <div class="col-lg-12 ">-->
+
+        <!--            <button class="btn btn-danger btn-sm logout">로그아웃</button>-->
+        <!--        </div>-->
+    </div>
+    <hr>
+    <div class="row">
+        <nav id="sidebarMenu" class="col-md-12 d-md-block   collapse">
+            <h3 class=" text-dark mt-1 text-center" th:text="${session.dto.dept_name}+'/'+ ${session.dto.user_nm}+' '+${session.dto.position}"></h3>
+            <div id="user_no" class="text-dark mt-1 text-center" th:text="${session.dto.user_no}" hidden></div>
+            <div id="admin" class="text-dark mt-1 text-center" th:text="${session.dto.admin}" hidden></div>
+<!--            <tr th:each="list : ${chk_id}">-->
+<!--                <div id="chk_id" th:text="${list.COM_VALUE}"></div>-->
+<!--            </tr>-->
+            <input id="tree_menu_s1" hidden method="post"/>
+            <input id="tree_menu_n1" hidden method="post"/>
+            <div class="position-sticky pt-3  ">
+                <button class="btn btn-primary gx-3 w-100 col-sm-6 mb-4"  onclick="location.href='/logout'">로그아웃</button>
+            </div>
+            <br>
+            <div class="position-sticky pt-3  ">
+                <button id="write_list" class="btn btn-primary gx-3 w-100 col-sm-6 mb-3">문서등록</button>
+            </div>
+
+            <div class="tree" id="tree"></div>
+            <hr>
+            <ul class="list-unstyled ps-0 text-nowrap">
+                <!--                  <li class="mb-1" id="auth_menu" th:if="${session.auth} and (${session.auth.ADD_FOLDER}=='T' or ${session.auth.MOD_FOLDER}=='T' or ${session.auth.DELETE_FOLDER}=='T' or ${session.auth.DOC_AUTH}=='T' or  ${session.auth.ADMIN_TG}=='B')">-->
+                <li class="mb-1 " id="auth_menu">
+<!--                    <div class="text-center">-->
+<!--                        <button class="btn btn-toggle  align-items-center rounded collapsed " data-bs-toggle="collapse" data-bs-target="#admin_menu" aria-expanded="false">-->
+<!--                            관리자 메뉴 <i class="bi bi-gear"></i>-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+                    <ul class="collapse ms-2" id="admin_menu">
+
+<!--                        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#folder" aria-expanded="false">-->
+<!--                            <i class="bi bi-arrow-return-right"></i> 폴더 관리 <i class="bi bi-folder-fill  text-warning"></i>-->
+<!--                        </button>-->
+
+<!--                        <div class="collapse ms-3" id="folder">-->
+<!--                            <ul class="btn-toggle-nav  pb-1 ">-->
+<!--                                &lt;!&ndash;                                  <li th:if="${session.auth.ADD_FOLDER}=='T'">&ndash;&gt;-->
+<!--                                <li >-->
+<!--                                    <a  class="nav-link link-dark" th:id="openModal" onclick="popUp();">-->
+<!--                                        폴더추가-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                                &lt;!&ndash;                                  <li th:if="${session.auth.MOD_FOLDER}=='T'">&ndash;&gt;-->
+<!--                                <li >-->
+<!--                                    <a  class="nav-link link-dark" th:id="openModifyModal">-->
+<!--                                        폴더명변경-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                                &lt;!&ndash;                                  <li th:if="${session.auth.DELETE_FOLDER}=='T'">&ndash;&gt;-->
+<!--                                <li >-->
+<!--                                    <a  class="nav-link link-dark" th:id="openDeleteModal">-->
+<!--                                        폴더삭제-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+                        <br>
+                        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#documents" aria-expanded="false">
+                            <i class="bi bi-arrow-return-right"></i> 문서 관리 <i class="bi bi-folder-fill  text-warning"></i>
+                        </button>
+                        <div class="collapse ms-3" id="documents">
+                            <ul class="btn-toggle-nav  pb-1 ">
+                                <!--                                  <li th:if="${session.auth.DOC_AUTH}=='T'">-->
+                                <li >
+                                    <a class="nav-link link-dark"  th:href="@{/main}">
+                                        전체문서조회
+                                    </a>
+                                </li>
+                                <!--                                  <li th:if="${session.auth.ADMIN_TG}=='B' or ${session.auth.ADMIN_TG}=='C'">-->
+<!--                                <li >-->
+<!--                                    <a  class="nav-link link-dark" th:id="authModal">-->
+<!--                                        권한관리-->
+<!--                                    </a>-->
+<!--                                </li>-->
+                            </ul>
+                        </div>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js"></script>
+    <script th:src="@{/js/menu.js}"></script>
+
+    <script th:inline="javascript" type="text/javascript">
+		$(function() {
+
+
+
+
+		<!--contextmenu 오픈시 노드선택 할지-->
+        $.jstree.defaults.contextmenu.select_node=false;
+
+
+        <!--포맷전 데이터 값-->
+		var arr = /*[[${data}]]*/;
+		<!--포맷후 저장할 데이터 변수-->
+        var data;
+        var nowId;
+
+        /*
+            PARENT  = 부모
+            id  = 키값(MENU_CODE)
+            부모코드밑에 자식 코드가 있을경우
+            children 을 만든다
+        */
+        function getData(arr){
+            const {res} = arr.reduce((acc,curr)=>{
+                  if(acc.parentMap[curr.PARENT]){
+                    (acc.parentMap[curr.PARENT].children = acc.parentMap[curr.PARENT].children || []).push(curr);
+                  } else {
+                    acc.res.push(curr);
+                  }
+                    acc.parentMap[curr.id] = curr;
+                    return acc;
+              },
+                {parentMap: {}, res: []}
+              );
+
+            <!--jsTree 구조로 변경-->
+            return res;
+        }
+
+        data = getData(arr);
+
+    $('#tree').jstree({
+        'core' : {
+                "data":data, <!--데이터 입력 -->
+                 "themes": {
+                    'name': 'proton',
+                    'responsive': false
+                 },
+                 "animation":0,
+            },
+
+        'types': {
+            '#':{
+                "valid_children": ["root","default","default2"]
+            },
+            "root": {
+                "icon": "bi bi-folder-fill text-danger",
+                "valid_children": ["default","default2"]
+            },
+            "default": {
+                "icon": "bi bi-folder-fill text-warning"
+            },
+            "default2": {
+                "icon": "bi bi-folder-fill text-warning"
+            },
+            "myType": {
+                "icon": "/assets/images/tree_icon.png"
+            }
+        },
+        "contextmenu": {
+                "items":{
+                        "create":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "생성",
+                            "action" : function(data){
+
+                                        var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                        var menu_code = obj.id;
+                                        var node = $('#tree').jstree(true).get_node(menu_code);
+                                        var parentNode = $('#tree').jstree(true).get_node(node.parent);
+                                        var parentNodeId = parentNode.id;
+                                        popUp(menu_code);
+                                },
+                            "icon":"bi bi-plus-circle-fill text-primary"
+                        },
+                        "update":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "수정",
+                            "action" : function(data){
+                                      var inst = $.jstree.reference(data.reference),
+                                      obj = inst.get_node(data.reference);
+                                      var menu_code = obj.id;
+                                      updateMenu(menu_code);
+                                },
+                            "icon":"bi bi-pencil-fill text-success"
+                        },
+
+                        "delete":{
+                            "separator_before" : false,
+                            "separator_after" : true,
+                            "label" : "삭제",
+                            "action" : function(data){
+                                        var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                        var MENU_CODE = obj.id;
+                                        var node = $('#tree').jstree(true).get_node(MENU_CODE);
+                                        var parentNode = $('#tree').jstree(true).get_node(node.parent);
+                                        var parentNodeId = parentNode.id;
+
+                                        var admin_chk = $("#admin").text();
+
+                                        if(admin_chk != 'Y') {
+                                            alert('관리자에게 문의하세요.');
+                                            return;
+                                        }
+
+                                        if(confirm("메뉴를 삭제 하시겠습니까?")){
+                                                $.ajax({
+                                                    url:"/deleteCkFolder/"+MENU_CODE,
+                                                    type:"post",
+                                                    success:function(data){
+                                                        if(confirm("폴더 내부의 "+data+"건의 데이터가 있습니다. 그래도 삭제 하시겠습니까?")){
+                                                            $.ajax({
+                                                                url:"/deleteFolder/"+MENU_CODE,
+                                                                method:"post",
+                                                                success:function(data){
+                                                                    if(data == 1){
+                                                                        console.log("삭제 성공");
+                                                                    }else alert("메뉴코드 전달값에 문제가 있습니다.");
+                                                                },
+                                                                complete:function(){
+                                                                     $.ajax({
+                                                                        url:"/getMenuData",
+                                                                        method:"post",
+                                                                        success:function(newMenu){
+                                                                            var newMenu = getData(newMenu);
+                                                                             $('#tree').jstree(true).settings.core.data = newMenu;
+                                                                             $('#tree').jstree(true).refresh();
+                                                                        }
+                                                                     })
+                                                                }
+                                                            })
+                                                        }else{ return false;}
+                                                    }
+                                                })
+                                            }else{
+                                                return false;
+                                        } <!--end if-->
+                                },
+                            "icon":"bi bi-x-circle-fill text-danger"
+                        } <!--end delete menu-->
+                } <!--end custom menu-->
+        },
+        "plugins":['search','themes','ui','types','contextmenu']
+
+     }); <!--end jstree init-->
+
+    $('#tree').bind('select_node.jstree', function(event, data){
+       if (data.instance.get_node(data.selected).id != "")
+       {
+            tree_menu_s = data.instance.get_node(data.selected).id;        //id 가져오기
+            tree_menu_n = data.instance.get_node(data.selected).text;
+
+
+            document.getElementById("tree_menu_s1").value = tree_menu_s;
+            document.getElementById("tree_menu_n1").value = tree_menu_n;
+       }
+    })
+
+    $('#tree').bind("loaded.jstree", function (e, data) {
+
+	    $(this).jstree("open_all");
+
+    }); //트리 오픈
+
+
+});
+
+
+
+
+
+	</script>
+    <script>
+              $(function(){
+
+              var status = "toolbar=no,scrollbars=no,resizable=yes,status=no,menubar=no,width=700, height=500, top=0,left=50";
+
+              $("#authModal").on("click",function(){
+                    var status2 = "toolbar=no,scrollbars=no,resizable=yes,status=no,menubar=no,width=1200, height=550, top=0,left=50";
+                    window.open("/fragments/authModal",'팝업',status2);
+                })
+              $(".logout").on("click",function(){
+                   location.href="/logout";
+
+              })
+
+
+
+
+
+
+
+
+
+
+
+          })
+
+              var status = "toolbar=no,scrollbars=no,resizable=yes,status=no,menubar=no,width=700, height=500, top=0,left=50";
+
+              function updateMenu(MENU_CODE){
+                var admin_chk = $("#admin").text();
+
+                    if(admin_chk != 'Y') {
+                        alert('관리자에게 문의하세요.');
+                        return;
+                    }
+                var status2 = "toolbar=no,scrollbars=no,resizable=yes,status=no,menubar=no,width=700, height=550, top=0,left=50";
+                    window.open("/fragments/modModal/"+MENU_CODE,'팝업',status2);
+                }
+
+              function popUp(MENU_CODE){
+
+                    //var chk_id = $("#chk_id").text();
+                    //alert(chk_id.length);
+                    //for (i=1; i<=chk_id.length; i++) {
+                        //alert(chk_id);
+                    //}
+                    var admin_chk = $("#admin").text();
+
+                    if(admin_chk != 'Y') {
+                        alert('관리자에게 문의하세요.');
+                        return;
+                    }
+
+                var popUp =  window.open("/fragments/addModal/"+MENU_CODE,'팝업',status);
+              }
+              function popUp2(MENU_CODE){
+
+
+                 window.open("/fragments/deleteModal/"+MENU_CODE,'팝업',status);
+              }
+              <!--search 변수-->
+              var to = false;
+              $('#searchM').keyup(function () {
+                if(to) { clearTimeout(to); }
+                to = setTimeout(function () {
+                  var v = $('#searchM').val();
+                  $('#tree').jstree(true).search(v);
+                }, 250);
+              });
+
+
+
+          </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dage.quality.DAO.authDAO">
+   <select id="auth_s" resultType="com.dage.quality.DTO.AuthDto">
+      select
+         EMPNO,
+         USER_ID,
+         PROJ_CODE,
+         ADMIN_TG,
+         ADD_FOLDER,
+         MOD_FOLDER,
+         DELETE_FOLDER,
+         DOC_AUTH,
+         NAME
+      from thr_qul_list_auth
+      where EMPNO = #{empno}
+   </select>
+   <select id="auth_all" resultType="hashMap">
+      select
+         EMPNO,
+         USER_ID,
+         sf_proj_name(PROJ_CODE) as PROJ_CODE,
+         ADMIN_TG,
+         ADD_FOLDER,
+         MOD_FOLDER,
+         DELETE_FOLDER,
+         DOC_AUTH,
+         NAME
+      from thr_qul_list_auth
+      order by ADMIN_TG desc
+   </select>
+   <insert id="addAuth">
+      insert into thr_qul_list_auth
+      values (
+      #{empno},
+      SFCC_GET_USER_ID(#{empno}),
+      SF_GET_PROJ_EMP_NO(#{empno}),
+      #{admin_tg},
+      #{addFolder},
+      #{modFolder},
+      #{delFolder},
+      #{doc_tg},
+      SFCC_KMS_USER_NM(sfcc_get_user_id(#{empno}))
+      )
+   </insert>
+   <delete id="delAuth">
+      delete thr_qul_list_auth
+      where empno= #{empno}
+   </delete>
+   </mapper>

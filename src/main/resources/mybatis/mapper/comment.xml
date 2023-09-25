@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dage.quality.DAO.CommentDao">
+    <select id="comment_list" resultType="hashMap">
+        select
+        user_nm,
+        rmk,
+        crtdate,
+        list_seq,
+        seq,
+        user_no
+        from thr_qul_list_com
+        where list_seq =#{list_seq}
+        order by seq desc
+    </select>
+    <insert id="com_write">
+        insert into thr_qul_list_com
+        (
+        SEQ,
+        LIST_SEQ,
+        USER_NM,
+        USER_NO,
+        EMPNO,
+        CRTDATE,
+        QUL_COM,
+        POSITION,
+        DEPT_NAME,
+        RMK
+        )
+        values
+        (
+        thr_qul_list_com_seq.nextval,
+        #{list_seq},
+        #{user_nm},
+        #{user_no},
+        '',
+        SYSDATE,
+        '',
+        #{position},
+        #{dept_name},
+        #{rmk}
+        )
+    </insert>
+    <delete id="delcomm">
+        delete from thr_qul_list_com
+        where seq =#{seq}
+            and list_seq =#{list_seq}
+    </delete>
+</mapper>

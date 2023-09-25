@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+
+
+<div style="" class="container-fluid" id="main_div" >
+    <div id="ajaxStart" style="position: absolute; left: 40%;top: 50%;z-index: 9999;" >
+        <button class="btn btn-primary" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            변경중입니다..
+        </button>
+    </div>
+    <div class="row" >
+        <div class=" col-sm-12" style="margin-top:20px;">
+            <div class="card" style="height:300px">
+                <div class="card-header">
+                    <h5>메뉴명변경 <i class="bi bi-pencil-fill fs-5 text-success"></i></h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <strong>메뉴명 변경</strong>
+                    </h6>
+                    <div class="row">
+                        <div class="col col-sm-8">
+                            <label>선택 메뉴명</label>
+                            <input class="form-control" id="menu_h" type="text" readonly/>
+                        </div>
+                        <div class="col col-sm-4">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col col-sm-8">
+                            <label>변경 메뉴명</label>
+                            <input type="text" class="form-control " maxlength="30" id="folder_nm" placeholder="변경 하실 메뉴명을 작성해주세요.">
+                        </div>
+                        <div class="col col-sm-4">
+                            <button class="btn btn-primary" id="change_h">메뉴명 변경</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+
+var selected_menu_name =/*[[${MENU_NAME}]]*/
+
+$("#menu_h").val(selected_menu_name);
+
+$(function(){
+    $("#ajaxStart").hide();
+    var menu_code =/*[[${MENU_CODE}]]*/
+    $(document).ajaxStart(function(){
+            $("button").attr("disabled",true);
+        });
+
+    $( document ).ajaxStop(function() {
+         $("button").attr("disabled",false);
+         $("#ajaxStart").hide();
+    });
+    $("#change_h").on("click",function(){
+        var name_s = $("#folder_nm").val();
+        if(name_s == null || name_s==""){
+            alert("변경하실 이름을 작성해주세요.");
+            $("#folder_nm").focus();
+            return false;
+        }
+        $.ajax({
+            url:"/modFolder",
+            data:{"menu_code":menu_code,"name":name_s},
+            beforeSend:function(){
+                $("#ajaxStart").show();
+            },
+            success:function(data){
+                    alert("변경 되었습니다.");
+                    opener.parent.location.reload();
+                    window.close();
+                $("button").attr("disabled",false);
+            }
+        })
+    });
+})
+
+
+</script>
+
+
+</body>
+</html>

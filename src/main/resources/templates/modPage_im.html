@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+  <script th:src="@{/js/jquery.js}"></script>
+  <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script th:src="@{/js/mod.js}"></script>
+
+  <style>
+        label{
+            font-weight:bold;
+            margin-top:8px;
+        }
+        body{
+            padding:20px;
+
+        }
+        #wrap{
+            background-color:#f5f5f5;
+            height:100vh;
+        }
+        .file_text:hover{
+            cursor:pointer;
+            color:skyblue;
+            text-decoration: underline;
+        }
+        .file_text:before{
+            font-family: bootstrap-icons;
+            content:"\F3D1  ";
+            color:orange;
+            position: relative;
+            font-size:18px;
+        }
+        #priveiwImg{
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+
+<body >
+<div class="container-fluid text-nowrap h-100" id="wrap">
+  <div class="row " >
+    <div class="col-sm-2">
+      <label for="name" class="form-label">작성자</label>
+      <input type="text" class="form-control" id="name" disabled th:value="${info.user_nm}">
+      <input type="text" hidden class="form-control" id="emp_no" disabled th:value="${session.dto.empno}">
+      <input type="text" hidden class="form-control" id="seq" disabled th:value="${info.seq}">
+    </div>
+    <div class="col-sm-6">
+      <label for="dept_name" class="form-label">현장명</label>
+      <span  class="form-control" id="dept_name" th:text="${info.dept_name}" ></span>
+    </div>
+    <div class="col-sm-2" >
+      <label for="crtdate" class="form-label">작성일</label>
+      <span  class="form-control" style="text-overflow: ellipsis; display:block" id="crtdate" th:text="${info.crtdate}" ></span>
+    </div>
+    <div class="col-sm-6">
+      <label for="proj_code" class="form-label" hidden>현장코드</label>
+      <span  class="form-control" id="proj_code" th:text="${info.proj_code}" hidden></span>
+    </div>
+    <div th:each="list : ${dept_list}">
+      <div id="e_mail" th:text="${list.e_mail}" hidden></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3">
+      <label for="doc_dt" class="form-label" >년월일</label>
+      <input type="date" class="form-control" id="doc_dt" th:value="${info.doc_dt}" onchange="get_title_im();" />
+    </div>
+    <div class="col-2">
+      <label for="ck_point" class="form-label" >점검기관 </label>
+      <br><input class="form-control" id="ck_point" th:value="${info.ck_point}" onchange="get_title_im();" />
+    </div>
+  </div><br>
+
+  <div class="row row_div" >
+    <div class="col-sm-7">
+      <label for="title" class="form-label">제목</label>
+      <input  class="form-control" id="title" th:value="${info.title}"/>
+    </div>
+    <div class="col-sm-3">
+      <label for="menu" class="form-label">보관함</label>
+      <span class="form-control" id="menu" th:text="${info.menu_name}"/>
+    </div>
+    <div class="col-sm-2">
+      <label for="doc_ver" class="form-label">문서 버전 </label>
+      <span class="form-control" id="doc_ver" th:text="${info.doc_ver}" ></span>
+    </div>
+
+  </div>
+  <div class="row row_div" >
+    <div class="col-sm-12">
+      <label for="doc_ver" class="form-label">내용</label>
+      <textarea  class="form-control" id="content" th:text="${info.content}" rows="5"  style="resize: none;"  ></textarea>
+    </div>
+  </div>
+  <div class="row row_div h-auto" >
+    <div class="col-sm-12">
+      <table class="table table-border ">
+        <tr>
+          <th width="100%">파일</th>
+          <th >용량</th>
+          <th>&nbsp;</th>
+        </tr>
+        <tr th:each="file : ${file}" >
+          <td class="file_text" th:id="${file.SEQ}"  th:text="${file.ORIGIN_NM}"> </td>
+          <td class=""  th:text="${file.F_SIZE}+'KB'"> </td>
+          <td ><button type="button" th:id="${file.SEQ}"  class="btn-close deleteBtn" aria-label="Close"></button> </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <label class="btn btn-primary btn-sm mb-2 fileinput-button" id="addFile" for="myDropzone">파일 추가</label>
+            <form th:action="@{/test2}" class="dropzone list-unstyled" th:id="myDropzone" id="myDropzone">
+              <div class="dz-message" data-dz-message>
+                <span class="align-middle" id="upload_message">파일을 드래그 드랍 해주세요. <i class="bi bi-cloud-plus-fill fs-1"></i> </span>
+              </div>
+            </form>
+            <button hidden th:id="test2" type="button">업로드 hidden Btn</button>
+
+            <!-- 포스팅 - 이미지/동영상 dropzone 영역 -->
+            <div class="row" hidden>
+              <div class="col ">
+                <ul class="list-unstyled mb-0 " id="dropzone-preview">
+                  <li class="mt-2" id="dropzone-preview-list">
+                    <!-- This is used as the file preview template -->
+                    <div class="border rounded-3">
+                      <div class="d-flex align-items-center p-2">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="width-8 h-auto rounded-3">
+                            <img data-dz-thumbnail="data-dz-thumbnail" id="priveiwImg" class=" rounded-3 block" src="#" alt="Dropzone-Image" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <div class="pt-1">
+                            <h6 class="font-semibold mb-1" data-dz-name="data-dz-name">&nbsp;</h6>
+                            <p class="text-sm text-muted fw-normal" data-dz-size="data-dz-size"></p>
+                            <strong class="error text-danger" data-dz-errormessage="data-dz-errormessage"></strong>
+                          </div>
+                        </div>
+                        <div class="shrink-0 ms-3">
+                          <button data-dz-remove="data-dz-remove" class="btn btn-sm btn-danger">삭제</button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="progress" style="display:none" >
+              <div id="pro_g" class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style="" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <span class="pro_s"></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="col col-sm-12 text-center pb-3">
+    <button class="btn btn-success modBtn" th:param="${info.seq}"  th:onclick="save_im(this.getAttribute('param'));">저장</button>
+
+  </div>
+  <div class="row">
+    <div class=" ">
+      <p class="alert alert-success fw-bold">부서 및 메뉴 변경시 저장 버튼을 눌러 저장을 해주시기 바랍니다.</p>
+    </div>
+  </div>
+  <div style="display:none;" th:replace="fragments/modal :: modalFragment"></div>
+  <div style="display:none;" th:replace="fragments/menuModal :: menuModalFragment"></div>
+
+
+</div>
+<script>
+
+$(function() {
+
+$('#dept_name').val() = $('#dept_name').val().replace(/ /gi, '');
+
+})
+
+function get_title_im() {
+
+        var date = $("#doc_dt").val();
+
+        document.getElementById("title").value = date.replaceAll('-','.') + "(" + $("#ck_point").val() + "-" + $("#dept_name").text() + ")";
+
+}
+
+
+
+</script>
+
+<script>
+        $(function(){
+
+
+
+
+            var file_name;
+            <!--파일 다운로드-->
+            $(".file_text").on("click",function(){
+                var seq =  $(this).attr("id");
+                file_name = $(this).text();
+                //파일 다운로드
+                 $.ajax({
+                          url:"/file_download",
+                          data:{
+
+                              "file_seq" :seq},
+                          /*method:"post",*/
+                              xhrFields: {
+                                  responseType: "blob",
+                              }
+                              ,contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+                          }).done(function (blob, status, xhr) {
+                                console.log(status);
+                                // check for a filename
+
+                                //var filename_1 = xhr.getResponseHeader("X-Filename");
+                              var filename_1 = file_name;
+                              var fileName = "";
+                              var disposition = xhr.getResponseHeader("Content-Disposition");
+                              /*console.log("1." + file_name);*/
+                              if (disposition && disposition.indexOf("attachment") !== -1) {
+                                  var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                  var matches = filenameRegex.exec(disposition);
+
+                                  /*console.log("2." + matches[1]);*/
+
+                              if (matches != null && matches[1]) {
+                                  fileName = decodeURI(matches[1].replace(/['"]/g, ""));
+
+                                  /*console.log("3." + fileName);*/
+                               }
+                              }
+                              if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                                  window.navigator.msSaveOrOpenBlob(blob, fileName);
+                                  /*console.log("4." + fileName);*/
+                              } else {
+                                  var URL = window.URL || window.webkitURL;
+                                  var downloadUrl = URL.createObjectURL(blob);
+
+                                  /*console.log("5." + downloadUrl);*/
+
+                                  if (fileName) {
+                                      var a = document.createElement("a");
+                                      /*console.log("6." + fileName);*/
+                                      // for safari
+                                      if (a.download === undefined) {
+                                          window.location.href = downloadUrl;
+                                          /*console.log("7." + file_name);*/
+                                      } else {
+                                          a.href = downloadUrl;
+                                          //a.download = fileName;
+                                          a.download = file_name;
+                                          document.body.appendChild(a);
+                                          a.click();
+                                          console.log(file_name);
+                                          /*console.log("8." + fileName);*/
+                                      }
+                                  } else {
+                                      window.location.href = downloadUrl;
+                                      /*console.log("9." + fileName);*/
+                                  }
+                              }
+                        }).fail(function(data, textStatus, errorThrown){
+                          alert("파일을 찾을 수 없습니다. \n관리자에게 문의해주세요.");
+                            });
+                 })
+        })
+        <!--파일삭제-->
+        function deleteFile(obj){
+            alert('파일 삭제는 즉시 적용됩니다 진행하시겠습니까?');
+            obj.parent().parent().remove();
+        }
+
+const id = "#myDropzone";
+const dropzone = document.querySelector(id);
+
+      var dropzonePreviewNode = document.querySelector('#dropzone-preview-list');
+      dropzonePreviewNode.id = '';
+      var previewTemplate = dropzonePreviewNode.parentNode.innerHTML;
+      dropzonePreviewNode.parentNode.removeChild(dropzonePreviewNode);
+
+var myDropzone = new Dropzone(id,{
+    url: "/test2",
+    paramName: "file", // The name that will be used to transfer the file
+    maxFilesize: 100, // MB
+    method: "post",
+    autoQueue: false,
+    clickable: true,
+    autoProcessQueue: false,
+    previewTemplate: previewTemplate,
+    parallelUploads:100,
+    clickable: ".fileinput-button",
+    init:function(){
+        this.on("addedfile", function(file){
+            if(file.size>(100*1024*1024)){
+                alert("100MB미만의 파일만 업로드 가능합니다.");
+                this.removeFile(file);
+            }
+
+            if (file.type.match(/spreadsheetml.*/)) {
+                this.emit("thumbnail", file,"/img/dropZone/excel.png");
+            }
+            else if (file.type.match(/pdf.*/)) {
+                this.emit("thumbnail", file,"/img/dropZone/pdf.jpg");
+            }
+            else if (file.type.match(/msword.*/)) {
+                this.emit("thumbnail", file,"/img/dropZone/word.png");
+            }
+            else if (file.type.match(/haansofthwp.*/)) {
+                this.emit("thumbnail", file,"/img/dropZone/한글.png");
+            }
+            else if (file.type.match(/presentationml.*/)) {
+                this.emit("thumbnail", file,"/img/dropZone/ppt.png");
+            }else {
+                 this.emit("thumbnail", file,"/img/logo.png");
+            }
+        });
+
+        var myDropzone2 = this;
+         $("#test2").on("click",function(e){
+             if(myDropzone2.files!=null){
+                e.preventDefault();
+                e.stopPropagation();
+                var file_list= null;
+                file_list= myDropzone2.files;
+                console.log(file_list);
+                var sendingData = new FormData();
+                if(file_list!="" && file_list !=null){
+                   for(var i=0;i <= file_list.length;i++){
+                        sendingData.append("file",file_list[i]);
+                   }
+                }
+                sendingData.append("seq",$("#seq").val());
+                $.ajax({
+                    url:"/m_up_File",
+                    data:sendingData,
+                    method:"post",
+                    dataType:"json",
+                    processData: false,
+                    contentType: false,
+                    xhr: function(){  //xhr 설정
+                        let xhr = $.ajaxSettings.xhr()  //ajax에서 xhr객체를 가져 옵니다.
+                        xhr.upload.onprogress = function(e){  //프로그래스 콜백 함수에서 뭐할지 정의하여 줍니다.
+                            let percent = e.loaded / e.total * 100 //도달한 값에서 총 값을 나눈뒤 100을 곱하여 줍니다.(백분율)
+                            progress(percent);
+                        }
+                        return xhr  //정의된 xhr을 리턴하여 ajax에서 사용하도록 합니다.
+                    },
+                    success:function(data){
+                        if(data=="-2"){
+                        alert("로그인 이후 다시 진행해주시기 바랍니다.")
+                        location.href='/';
+                        }else if(data =="-1"){
+                            alert("오류가 발생하였습니다. 파일의 크기가 너무 크거나 요청시간이 초과되었습니다.");
+                        }else{
+                            alert("파일 업로드 완료");
+                            location.href='/listPopup_im/'+$("#seq").val();
+                        }
+                    }
+                })
+             }
+            else {return false; }
+         });
+    }
+  });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<style>
+
+</style>
+    <div th:fragment="modalFragment">
+        <!-- Modal -->
+<!--        <div class="modal  fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+        <div class="modal  fade" id="staticBackdrop" th:id="Modal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg  modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title " style="font-size:15px;" id="staticBackdropLabel">부서변경</h5>
+                        <button type="button" class="btn-close DeptModal_close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body" style="height: auto;">
+                        <p  style="margin-bottom: 0;" class="alert alert-light text-center fw-bold">부서를 선택하여주세요</p>
+                        <div class="text-center ">
+                            <div id="sub_dept_div" class="input-group has-validation">
+                                <select id="sub_dept_name" class="form-select" th:if="${sub_emp_list}" >
+                                    <option value="-1" disabled selected>등록 부서를 선택해주세요. &#128269;  </option>
+                                    <option  th:each="list : ${sub_emp_list}" th:text="${list.SUB_DEPT_NAME}" th:value="${list.PROJ_CODE}">
+                                    </option>
+                                </select>
+
+                                <select  class="form-select" th:unless="${sub_emp_list}" disabled >
+                                    <option value="" disabled selected> 권한 부서가 없습니다.   </option>
+                                </select>
+                                <button th:if="${sub_emp_list}"  id="modDeptBtn" class="btn btn-primary ms-2 position-relative"  type="button">확인</button>
+                                <button th:unless="${sub_emp_list}" disabled   class="btn btn-primary ms-2 position-relative"  type="button">확인</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

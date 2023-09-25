@@ -1,0 +1,21 @@
+#warp{
+   position: absolute;
+   left:50%;
+   top:20%;
+   transform:translate(-50%,-20%);
+   font-family:Malgun Gothic;
+}
+td{
+ font-size:17px;
+ padding:5px;
+}
+h4{
+font-size:28px;
+}
+h6{
+font-size:15px;
+/*margin-left:10%;*/
+}
+#loginBtn{
+
+}
